@@ -1,588 +1,400 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Indian Classical Music Trainer</title>
-<style>
-  :root {
-    --primary: #4E342E; /* Darker Brown */
-    --secondary: #795548; /* Brown */
-    --accent: #FFC107; /* Amber */
-    --bg: #FFF8E1; /* Beige */
-    --panel-bg: #FFFFFF;
-    --text: #3E2723;
-    --highlight: #FF5722; /* Deep Orange */
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramu | AI & Software Engineer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #010409;
+            --cyan: #00f2ff;
+            --pink: #ff007f;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(13, 17, 23, 0.95);
+        }
 
-  * { box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
 
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: white;
+            overflow-x: hidden;
+        }
 
-  .app-container {
-    display: flex; flex: 1; height: 100%; position: relative;
-  }
+        #bgCanvas { position: fixed; top: 0; left: 0; z-index: -1; background: #010409; }
 
-  /* --- WELCOME MODAL --- */
-  .modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    z-index: 1000;
-    display: flex; justify-content: center; align-items: center;
-    backdrop-filter: blur(4px);
-  }
-  .modal-box {
-    background: white; padding: 30px; border-radius: 15px;
-    text-align: center; max-width: 90%; width: 350px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    animation: popIn 0.3s ease-out;
-  }
-  @keyframes popIn { from {transform: scale(0.8); opacity:0;} to {transform: scale(1); opacity:1;} }
-  
-  .start-btn {
-    background: var(--highlight); color: white; padding: 12px 30px;
-    border: none; border-radius: 50px; font-size: 1.1rem; font-weight: bold;
-    cursor: pointer; margin-top: 20px;
-    box-shadow: 0 4px 10px rgba(255,87,34,0.3);
-  }
+        /* --- STICKY NAV --- */
+        nav {
+            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 1000px;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 50px;
+            padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+        }
 
-  /* --- HEADER (Mobile) --- */
-  header {
-    background-color: var(--primary);
-    color: white; padding: 15px;
-    display: flex; justify-content: space-between; align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 100;
-  }
-  .menu-toggle { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .logo { font-weight: 800; font-size: 1.4rem; color: #fff; text-decoration: none; transition: 0.3s; }
+        .logo:hover { color: var(--cyan); }
 
-  /* --- SIDEBAR --- */
-  .sidebar {
-    width: 300px;
-    background: var(--panel-bg);
-    border-right: 1px solid #ccc;
-    display: flex; flex-direction: column;
-    z-index: 200;
-    transition: transform 0.3s ease;
-    position: absolute; top: 0; bottom: 0; left: 0;
-    transform: translateX(-100%);
-  }
+        .nav-links { display: flex; gap: 15px; list-style: none; }
+        .nav-links a { text-decoration: none; color: #fff; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-links a:hover { color: var(--cyan); }
 
-  @media (min-width: 769px) {
-    header { display: none; }
-    .sidebar { position: relative; transform: translateX(0); box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
-  }
+        /* --- SECTION STYLING --- */
+        section { padding: 120px 10% 60px 10%; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        h2 { font-size: 2.5rem; margin-bottom: 30px; border-left: 5px solid var(--cyan); padding-left: 15px; }
 
-  .sidebar.open { transform: translateX(0); box-shadow: 2px 0 15px rgba(0,0,0,0.5); }
+        /* --- HERO --- */
+        .hero { text-align: center; }
+        #hero-image {
+            width: 150px; 
+            height: 150px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            margin-bottom: 20px;
+            border: 4px solid var(--cyan); /* CIRCLE BORDER */
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
+        }
 
-  .sidebar-header {
-    padding: 20px; background: var(--primary); color: white;
-    font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center;
-  }
+        .hero-name {
+            font-size: clamp(4rem, 15vw, 8rem);
+            font-weight: 800;
+            background: linear-gradient(180deg, #FFFFFF 30%, var(--cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.3));
+            margin: 10px 0;
+            letter-spacing: -2px;
+        }
+        .roles { color: #64748b; font-size: 1.1rem; font-weight: 500; }
 
-  /* Extra Menu Buttons */
-  .extra-menu {
-    display: flex; border-bottom: 1px solid #eee; background: #fafafa;
-  }
-  .extra-btn {
-    flex: 1; padding: 15px; border: none; background: transparent;
-    cursor: pointer; color: var(--secondary); font-weight: bold; font-size: 0.9rem;
-    display: flex; flex-direction: column; align-items: center; gap: 5px;
-  }
-  .extra-btn:hover { background: #eee; color: var(--primary); }
+        /* --- CARDS --- */
+        .glass-card {
+            background: rgba(255,255,255,0.02);
+            padding: 35px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            line-height: 1.8;
+            color: #cbd5e1;
+            max-width: 900px;
+            margin-bottom: 20px;
+        }
 
-  .lesson-list { flex: 1; overflow-y: auto; }
-  .cat-item { border-bottom: 1px solid #eee; }
-  .cat-header { padding: 15px 20px; cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; color: var(--primary); }
-  .cat-header:hover { background-color: #f9f9f9; }
-  .sub-lessons { display: none; background: #f5f5f5; }
-  .sub-lesson { padding: 10px 30px; cursor: pointer; font-size: 0.95rem; color: #555; border-bottom: 1px solid #e0e0e0; }
-  .sub-lesson:hover { background: #eee; }
+        .edu-box {
+            border-left: 4px solid var(--cyan);
+            padding-left: 25px;
+            margin-top: 20px;
+        }
 
-  /* PRO BUTTON */
-  .pro-section { padding: 15px; border-top: 1px solid #ddd; background: #fafafa; }
-  .pro-btn {
-    width: 100%; padding: 12px; border: none; border-radius: 8px;
-    background: var(--text); color: white; font-weight: bold; cursor: pointer;
-    transition: all 0.3s;
-  }
-  .pro-btn.active-mode {
-    background: var(--highlight);
-    box-shadow: 0 0 10px rgba(255,87,34,0.4);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        /* --- SKILLS --- */
+        .skills-container { display: flex; flex-direction: column; gap: 15px; max-width: 800px; }
+        .skill-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; cursor: pointer; transition: 0.3s; }
+        .skill-card:hover { border-color: var(--cyan); background: rgba(0, 242, 255, 0.03); }
+        .skill-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .skill-content { max-height: 0; overflow: hidden; transition: 0.5s ease-out; background: rgba(0, 0, 0, 0.3); padding: 0 25px; }
+        .skill-card.active .skill-content { max-height: 1000px; padding: 25px; border-top: 1px solid var(--border); }
+        
+        .tag-list { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; margin-top: 15px; margin-bottom: 20px; }
+        .tag-list li { background: rgba(0, 242, 255, 0.1); border: 1px solid rgba(0, 242, 255, 0.3); padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; color: var(--cyan); }
+        
+        /* HIGHLIGHTED BLUE LINKS */
+        .highlight-blue-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid var(--cyan);
+            border-radius: 12px;
+            color: var(--cyan);
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.3s;
+            margin-bottom: 10px;
+        }
+        .highlight-blue-link:hover {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--cyan);
+            transform: scale(1.02);
+        }
 
-  /* --- MAIN --- */
-  .main-content {
-    flex: 1; display: flex; flex-direction: column;
-    padding: 20px; align-items: center; overflow-y: auto;
-    position: relative;
-  }
+        /* --- CONTACT --- */
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .c-card { background: var(--glass); padding: 30px; border-radius: 15px; border: 1px solid var(--border); text-decoration: none; color: white; text-align: center; transition: 0.3s; }
+        .c-card:hover { border-color: var(--cyan); transform: translateY(-5px); }
+        .c-card i { font-size: 1.8rem; color: var(--cyan); margin-bottom: 15px; display: block; }
 
-  .display-area { margin-top: 20px; width: 100%; max-width: 800px; min-height: 200px; text-align: center; }
-  
-  .notes-container {
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 30px 0;
-  }
+        footer { text-align: center; padding: 60px; color: #334155; border-top: 1px solid var(--border); }
 
-  .note-card {
-    min-width: 45px; height: 45px; padding: 0 10px;
-    display: flex; align-items: center; justify-content: center;
-    background: white; border: 1px solid #d7ccc8; border-radius: 6px;
-    font-weight: bold; font-size: 1.1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-transform: uppercase;
-  }
-
-  .note-card.active {
-    background: var(--highlight); color: white;
-    transform: scale(1.15); border-color: var(--highlight);
-    box-shadow: 0 4px 12px rgba(255,87,34,0.4);
-    transition: transform 0.1s ease-out;
-  }
-
-  .controls-box {
-    background: white; padding: 20px; border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08); width: 100%; max-width: 400px;
-  }
-  .ctrl-row { margin-bottom: 15px; }
-  .ctrl-row label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: #666; }
-  select, input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
-  .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-  .action-btn { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; }
-  .play-btn { background: var(--primary); }
-  .stop-btn { background: #d32f2f; }
-  .play-btn:disabled { background: #ccc; cursor: not-allowed; }
-  .info-banner { background: #E3F2FD; color: #0D47A1; padding: 10px; width: 100%; text-align: center; border-radius: 6px; margin-bottom: 15px; display: none; }
-
-  /* --- FOOTER --- */
-  .ramu-footer {
-    margin-top: auto; /* Pushes to bottom */
-    padding: 20px;
-    color: #888;
-    font-size: 0.9rem;
-    text-align: center;
-    font-weight: 500;
-  }
-
-</style>
+        @media (max-width: 600px) { nav { flex-direction: column; gap: 10px; } }
+    </style>
 </head>
 <body>
 
-<div class="modal-overlay" id="welcomeModal">
-  <div class="modal-box">
-    <div style="font-size: 3rem; margin-bottom: 10px;">🎵</div>
-    <h2 style="color:var(--primary); margin:0;">Namaste!</h2>
-    <p style="color:#666; line-height:1.5;">Welcome to your personal Classical Music Trainer. Ready to master the Swaras?</p>
-    <button class="start-btn" onclick="closeModal()">Let's Start</button>
-  </div>
-</div>
+    <canvas id="bgCanvas"></canvas>
 
-<header>
-  <div style="font-weight:bold;">🎵 Classical Trainer</div>
-  <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-</header>
+    <nav>
+        <a href="#contact" class="logo">RAMU</a>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
-<div class="app-container">
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <span>Menu</span>
-      <span onclick="toggleSidebar()" style="cursor:pointer; font-size:1.5rem;" class="mobile-close">&times;</span>
-    </div>
-    
-    <div class="extra-menu">
-      <button class="extra-btn" onclick="alert('Progress Tracking coming soon!')">
-        <span>📊</span> Progress
-      </button>
-      <button class="extra-btn" onclick="alert('Practice History coming soon!')">
-        <span>📜</span> History
-      </button>
-    </div>
+    <section id="home" class="hero">
+        <div style="display: inline-block; text-align: center; width: 100%;">
+            <img id="hero-image" src="myimage_gemini.png" alt="My Photo">
+        </div>
+        <p style="letter-spacing: 4px; color: #94a3b8; font-size: 0.9rem; text-transform: uppercase;">Mission: Development</p>
+        <h1 class="hero-name">RAMU</h1>
+        <p class="roles">Future AI Engineer / BackEnd Developer / Gamer / Front End</p>
+    </section>
 
-    <div class="lesson-list" id="lessonListContainer"></div>
-    
-    <div class="pro-section">
-      <button class="pro-btn" id="btnProMode" onclick="toggleProMode()">★ Learn Like a Pro</button>
-      <div id="proHelpText" style="font-size:0.75rem; color:#666; margin-top:5px; text-align:center; display:none;">Select a Category to auto-play all.</div>
-    </div>
-  </aside>
+    <section id="about">
+        <h2>About Me</h2>
+        <div class="glass-card">
+            <p>I am a driven first-year CSE (AI & ML) student at <strong>VISTAS Chennai</strong> with a strong interest in coding and problem-solving. I enjoy working with Python and exploring concepts in artificial intelligence and machine learning. I have a deep interest in mathematics, physics, and logical thinking, and my goal is to become a highly skilled and confident software developer.</p>
+        </div>
+    </section>
 
-  <main class="main-content">
-    <div class="info-banner" id="statusBanner"></div>
-    <h2 id="currentLessonTitle" style="color:var(--primary);">Select a Lesson</h2>
-    <h4 id="currentLessonSubtitle" style="color:var(--secondary); font-weight:normal; margin-top:-10px;"></h4>
-    
-    <div class="display-area">
-      <div class="notes-container" id="notesDisplay"></div>
-    </div>
+    <section id="skills">
+        <h2>Learning Journey</h2>
+        <div class="skills-container">
+            
+            <div class="skill-card active" onclick="this.classList.toggle('active')">
+                <div class="skill-header">
+                    <h3>Python & Advanced Learning</h3>
+                    <i class="fab fa-python" style="color: var(--cyan); font-size: 1.5rem;"></i>
+                </div>
+                <div class="skill-content">
+                    <p style="font-weight: 600; color: #fff; margin-bottom: 10px;">Mastering Python through intensive logic building and automation.</p>
+                    
+                    <p style="color: #94a3b8; font-size: 0.85rem;">Courses Completed / Doing:</p>
+                    <ul class="tag-list">
+                        <li>CS50 (Harvard)</li>
+                        <li>Udemy Python Bootcamp</li>
+                        <li>100 Days of Code</li>
+                        <li>NumPy & Pandas</li>
+                    </ul>
 
-    <div class="controls-box">
-      <div class="ctrl-row">
-        <label>Instrument</label>
-        <select id="instrumentSelect">
-          <option value="sine">Sine Wave</option>
-          <option value="flute">Flute</option>
-          <option value="keyboard">Keyboard</option>
-          <option value="violin">Violin (Improved)</option>
-        </select>
-      </div>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 10px;">Work Portfolios:</p>
+                    <a href="https://github.com/codebyramu/mypython_code" target="_blank" class="highlight-blue-link">
+                        <i class="fab fa-github"></i> Personal Python Work (MyPython_Code)
+                    </a>
+                    <a href="https://github.com/me50/codebyramu" target="_blank" class="highlight-blue-link">
+                        <i class="fas fa-university"></i> CS50 Harvard Lab Submissions
+                    </a>
+                </div>
+            </div>
 
-      <div class="ctrl-row" id="normalControls">
-        <label>Speed (BPM)</label>
-        <input type="number" id="bpmInput" value="120" step="10" min="40" max="400">
-      </div>
+            <div class="skill-card" onclick="this.classList.toggle('active')">
+                <div class="skill-header">
+                    <h3>Version Control (Git & GitHub)</h3>
+                    <i class="fas fa-code-branch" style="color: var(--pink); font-size: 1.5rem;"></i>
+                </div>
+                <div class="skill-content">
+                    <p>Building professional workflows with terminal commands and versioning.</p>
+                    <ul class="tag-list">
+                        <li>Git CLI Codes</li>
+                        <li>Writing Comments</li>
+                        <li>Branch Management</li>
+                        <li>Linking Local to GitHub</li>
+                    </ul>
+                </div>
+            </div>
 
-      <div class="ctrl-row" id="proControls" style="display:none; background: #FFF3E0; padding:10px; border-radius:6px;">
-        <label style="color:var(--highlight); font-weight:bold;">Pro Mode Pattern</label>
-        <input type="text" id="proPatternInput" value="60, 120, 240">
-        <div style="font-size:0.75rem; color:#666; margin-top:5px;">60=1x, 120=2x, 240=4x</div>
-      </div>
+        </div>
+    </section>
 
-      <div class="btn-grid">
-        <button class="action-btn play-btn" id="btnPlay" onclick="togglePlay()">Play</button>
-        <button class="action-btn stop-btn" onclick="stopPlayback()">Stop</button>
-      </div>
-    </div>
+    <section id="education">
+        <h2>Education</h2>
+        <div class="glass-card edu-box">
+            <p style="color: var(--cyan); font-weight: 800; font-size: 1.2rem;">Aug 2024 – Present</p>
+            <h3 style="font-size: 1.5rem; margin: 10px 0;">B.Tech CSE – Artificial Intelligence & Machine Learning</h3>
+            <p>VISTAS (Vels Institute of Science, Technology & Advanced Studies), Chennai</p>
+            <p style="margin-top: 10px; color: #94a3b8;">Focusing on foundational engineering, advanced mathematics, and AI logic building.</p>
+        </div>
+    </section>
 
-    <div class="ramu-footer">
-      made with 💖 by ramu
-    </div>
-  </main>
-</div>
+    <section id="contact">
+        <h2>Get In Touch</h2>
+        <div class="contact-grid">
+            <a href="mailto:ramadass17810@gmail.com" class="c-card"><i class="fas fa-envelope"></i>Email</a>
+            <a href="tel:not my number :)" class="c-card"><i class="fas fa-phone"></i>Call</a>
+            <a href="https://github.com/codebyramu" target="_blank" class="c-card"><i class="fab fa-github"></i>Github</a>
+            <a href="https://www.linkedin.com/in/ramadass-a-1791103a1" target="_blank" class="c-card"><i class="fab fa-linkedin"></i>LinkedIn</a>
+        </div>
+    </section>
+
+    <footer>© 2025 Ramu • Future AI Engineer</footer>
+
+
+
 
 <script>
-/*******************************************************
- * 1. UI HELPERS
- *******************************************************/
-function closeModal() {
-  const modal = document.getElementById('welcomeModal');
-  modal.style.opacity = '0';
-  setTimeout(() => modal.style.display = 'none', 300);
-  
-  // Resume Audio Context on user interaction (browser policy)
-  if(audioCtx.state === 'suspended') audioCtx.resume();
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const mouse = { x: null, y: null };
+const colors = ['#00f2ff','#ff007f','#39ff14','#ffffff','#ff3131'];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+
+        // Random constant speed for this particle (1 to 5)
+        const speed = Math.random() * 5 + 1;
+        const angle = Math.random() * 2 * Math.PI;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.baseVx = this.vx;
+        this.baseVy = this.vy;
+
+        this.size = Math.random() * 6 + 1;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+
+        // Pull effect
+        this.pullTarget = null;
+        this.pullTimer = 0;
+    }
+
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+        ctx.fill();
+    }
+
+    update(deltaTime) {
+        // Normal movement
+        this.x += this.baseVx;
+        this.y += this.baseVy;
+
+        // Bounce off walls
+        if (this.x < 0 || this.x > canvas.width) this.baseVx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.baseVy *= -1;
+
+        // Gentle repel from mouse
+        if(mouse.x && mouse.y){
+            const dx = this.x - mouse.x;
+            const dy = this.y - mouse.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            const repelRadius = 100;
+            if(dist < repelRadius && dist > 0){
+                const angle = Math.atan2(dy, dx);
+                const repelStrength = 1; // small constant displacement
+                this.x += Math.cos(angle) * repelStrength;
+                this.y += Math.sin(angle) * repelStrength;
+            }
+        }
+
+        // Pull toward connected particle if active
+        if(this.pullTimer > 0 && this.pullTarget){
+            const dx = this.pullTarget.x - this.x;
+            const dy = this.pullTarget.y - this.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist > 0){
+                const pullSpeed = 2; // constant pull speed
+                this.x += (dx/dist) * pullSpeed;
+                this.y += (dy/dist) * pullSpeed;
+            }
+            this.pullTimer -= deltaTime;
+            if(this.pullTimer <= 0) this.pullTarget = null;
+        }
+    }
 }
 
-/*******************************************************
- * 2. DATA
- *******************************************************/
-const LESSON_DATA = {
-  'Sarali Varusai': [
-    ['s','r','g','m','p','d','n','sa','sa','n','d','p','m','g','r','s'],
-    ['s','r','s','r','s','r','g','m','s','r','g','m','p','d','n','sa','sa','n','sa','n','sa','n','d','p','sa','n','d','p','m','g','r','s'],
-    ['s','r','g','s','r','g','s','r','s','r','g','m','p','d','n','sa','sa','n','d','sa','n','d','sa','n','sa','n','d','p','m','g','r','s'],
-    ['s','r','g','m','s','r','g','m','s','r','g','m','p','d','n','sa','sa','n','d','p','sa','n','d','p','sa','n','d','p','m','g','r','s'],
-    ['s','r','g','m','p_2','s','r','s','r','g','m','p','d','n','sa','sa','n','d','p','m_2','sa','n','sa','n','d','p','m','g','r','s'],
-    ['s','r','g','m','p','d','s','r','s','r','g','m','p','d','n','sa','sa','n','d','p','m','g','sa','n','sa','n','d','p','m','g','r','s'],
-    ['s','r','g','m','p','d','n_2','s','r','g','m','p','d','n','sa','sa','n','d','p','m','g','r_2','sa','n','d','p','m','g','r','s']
-  ],
-  'Long Note Test': [
-    ['s_2', 'r_2', 'g_2', 'm_2'], 
-    ['s', 's', 'r_3', 'g', 'm']    
-  ],
-  'Jandai Varusai': [
-    ['s','s','r','r','g','g','m','m','p','p','d','d','n','n','sa','sa','sa','sa','n','n','d','d','p','p','m','m','g','g','r','r','s','s'],
-    ['s','s','r_2','s','s','r_2','s','r','s','s','r','r','g','g','m','m','r','r','g_2','r','r','g_2','r','g','r','r','g','g','m','m','p','p'],
-    ['s','r','g','m','p','d','n','sa','s','r','g','m','p','d','n','sa']
-  ],
-  'Sarali Malai': [
-    ['s','r','s','r','s','r','g','m','s','r','g','s','r','g','s','r','s','r','g','m','s','r','g','m','s','r','g','m','p_2','s','r','s','r','g','m','p','d','s','r','s','r','g','m','p','d','n_2','s','r','g','m','p','m','g','r','s']
-  ],
-  'new Varusai': [
-    ['s','n']
-  ]
-};
+// Initialize particles
+function initParticles(){
+    particles = [];
+    const count = (canvas.width * canvas.height)/7000; // decrease/increase dots
+    for(let i=0;i<count;i++){
+        particles.push(new Particle());
+    }
+}
+initParticles();
 
-const FREQ_MAP = {
-  's': 261.63, 'r': 293.66, 'g': 329.63, 'm': 349.23,
-  'p': 392.00, 'd': 440.00, 'n': 493.88, 'sa': 523.25
-};
+// Track mouse
+window.addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
+window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
 
-let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-let state = {
-  isPro: false, isPlaying: false, noteIndex: 0, timer: null,
-  currentNotes: [], currentBpm: 120, queue: []
-};
+function connectParticles(){
+    const now = Date.now();
+    for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
 
-// UI Refs
-const els = {
-  list: document.getElementById('lessonListContainer'),
-  notes: document.getElementById('notesDisplay'),
-  playBtn: document.getElementById('btnPlay'),
-  title: document.getElementById('currentLessonTitle'),
-  subTitle: document.getElementById('currentLessonSubtitle'),
-  sidebar: document.getElementById('sidebar'),
-  status: document.getElementById('statusBanner'),
-  proBtn: document.getElementById('btnProMode'),
-  proHelp: document.getElementById('proHelpText'),
-  normalCtrl: document.getElementById('normalControls'),
-  proCtrl: document.getElementById('proControls')
-};
+            if(dist < 120){
+                // Blend line color
+                const c1 = particles[i].color;
+                const c2 = particles[j].color;
+                function blendColors(c1,c2,ratio){
+                    const r1 = parseInt(c1.substr(1,2),16);
+                    const g1 = parseInt(c1.substr(3,2),16);
+                    const b1 = parseInt(c1.substr(5,2),16);
+                    const r2 = parseInt(c2.substr(1,2),16);
+                    const g2 = parseInt(c2.substr(3,2),16);
+                    const b2 = parseInt(c2.substr(5,2),16);
+                    const r = Math.round(r1*(1-ratio)+r2*ratio);
+                    const g = Math.round(g1*(1-ratio)+g2*ratio);
+                    const b = Math.round(b1*(1-ratio)+b2*ratio);
+                    return `rgb(${r},${g},${b})`;
+                }
+                ctx.strokeStyle = blendColors(c1,c2,0.5);
+                ctx.globalAlpha = 1 - dist/120;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+                ctx.globalAlpha = 1;
 
-// Init
-renderSidebar();
-
-// --- LOGIC ---
-function renderSidebar() {
-  els.list.innerHTML = '';
-  Object.keys(LESSON_DATA).forEach(category => {
-    const lessons = LESSON_DATA[category];
-    const wrapper = document.createElement('div');
-    wrapper.className = 'cat-item';
-    
-    const header = document.createElement('div');
-    header.className = 'cat-header';
-    header.innerHTML = `<span>${category}</span> <small>(${lessons.length})</small>`;
-    
-    const subContainer = document.createElement('div');
-    subContainer.className = 'sub-lessons';
-    
-    header.onclick = () => {
-      if(state.isPro) {
-        queueCategory(category);
-        if(window.innerWidth < 768) toggleSidebar();
-      } else {
-        const isVis = subContainer.style.display === 'block';
-        document.querySelectorAll('.sub-lessons').forEach(el => el.style.display = 'none');
-        subContainer.style.display = isVis ? 'none' : 'block';
-      }
-    };
-
-    lessons.forEach((notes, i) => {
-      const item = document.createElement('div');
-      item.className = 'sub-lesson';
-      item.innerText = `Lesson ${i + 1}`;
-      item.onclick = (e) => {
-        if(state.isPro) return;
-        e.stopPropagation();
-        loadLesson(category, i);
-        if(window.innerWidth < 768) toggleSidebar();
-      };
-      subContainer.appendChild(item);
-    });
-
-    wrapper.appendChild(header);
-    wrapper.appendChild(subContainer);
-    els.list.appendChild(wrapper);
-  });
+                // Start pull effect if not already active
+                if(!particles[i].pullTarget){
+                    particles[i].pullTarget = particles[j];
+                    particles[i].pullTimer = 1000; // 3 seconds
+                }
+                if(!particles[j].pullTarget){
+                    particles[j].pullTarget = particles[i];
+                    particles[j].pullTimer = 3000;
+                }
+            }
+        }
+    }
 }
 
-function toggleSidebar() { els.sidebar.classList.toggle('open'); }
+let lastTime = Date.now();
+function animate(){
+    const now = Date.now();
+    const deltaTime = now - lastTime;
+    lastTime = now;
 
-function toggleProMode() {
-  stopPlayback();
-  state.isPro = !state.isPro;
-  if (state.isPro) {
-    els.proBtn.classList.add('active-mode');
-    els.proBtn.innerHTML = "✓ Pro Mode Active";
-    els.proHelp.style.display = 'block';
-    els.normalCtrl.style.display = 'none';
-    els.proCtrl.style.display = 'block';
-    els.status.innerText = "PRO MODE: Select a Category on the left to start.";
-    els.status.style.display = 'block';
-    els.playBtn.disabled = true;
-    document.querySelectorAll('.sub-lessons').forEach(el => el.style.display = 'none');
-  } else {
-    els.proBtn.classList.remove('active-mode');
-    els.proBtn.innerHTML = "★ Learn Like a Pro";
-    els.proHelp.style.display = 'none';
-    els.normalCtrl.style.display = 'block';
-    els.proCtrl.style.display = 'none';
-    els.status.style.display = 'none';
-    els.playBtn.disabled = false;
-  }
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let p of particles){
+        p.update(deltaTime);
+        p.draw();
+    }
+    connectParticles();
+    requestAnimationFrame(animate);
 }
-
-function loadLesson(cat, index) {
-  stopPlayback();
-  const notes = LESSON_DATA[cat][index];
-  state.currentNotes = notes;
-  els.title.innerText = `${cat} - Lesson ${index+1}`;
-  els.subTitle.innerText = "Standard Mode";
-  renderNotes(notes);
-}
-
-function queueCategory(cat) {
-  stopPlayback();
-  state.queue = [];
-  const input = document.getElementById('proPatternInput').value;
-  let bpms = input.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
-  if(bpms.length === 0) bpms = [60, 120, 240];
-
-  const lessons = LESSON_DATA[cat];
-  lessons.forEach((notes, lIndex) => {
-    bpms.forEach(bpm => {
-      let reps = Math.round(bpm / 60);
-      if(reps < 1) reps = 1;
-      for(let r=1; r<=reps; r++) {
-        state.queue.push({
-          notes: notes, bpm: bpm,
-          title: `${cat} - Lesson ${lIndex+1}`,
-          subTitle: `Pro Mode: ${bpm} BPM (Repetition ${r} of ${reps})`
-        });
-      }
-    });
-  });
-  playNextInQueue();
-}
-
-function playNextInQueue() {
-  if(state.queue.length === 0) {
-    els.status.innerText = "Pro Sequence Finished!";
-    els.playBtn.innerText = "Play";
-    els.playBtn.disabled = true;
-    return;
-  }
-  const task = state.queue.shift();
-  state.currentNotes = task.notes;
-  state.currentBpm = task.bpm;
-  state.noteIndex = 0;
-  els.title.innerText = task.title;
-  els.subTitle.innerText = task.subTitle;
-  renderNotes(task.notes);
-  state.isPlaying = true;
-  els.playBtn.innerText = "Pause";
-  els.playBtn.disabled = false;
-  playLoop();
-}
-
-function renderNotes(notes) {
-  els.notes.innerHTML = '';
-  notes.forEach((n, i) => {
-    const d = document.createElement('div');
-    d.className = 'note-card';
-    d.id = 'n'+i;
-    d.innerText = n.split('_')[0]; 
-    els.notes.appendChild(d);
-  });
-}
-
-function togglePlay() {
-  if(state.isPlaying) {
-    state.isPlaying = false; clearTimeout(state.timer);
-    els.playBtn.innerText = "Resume";
-  } else {
-    if(!state.currentNotes.length) return alert("Please select a lesson first.");
-    state.isPlaying = true; els.playBtn.innerText = "Pause";
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-    playLoop();
-  }
-}
-
-function stopPlayback() {
-  state.isPlaying = false; state.noteIndex = 0; state.queue = [];
-  clearTimeout(state.timer); els.playBtn.innerText = "Play";
-  document.querySelectorAll('.note-card.active').forEach(el => el.classList.remove('active'));
-  if(state.isPro) {
-     els.status.innerText = "Pro Mode Stopped (Select Category to restart)";
-     els.playBtn.disabled = true;
-  }
-}
-
-// --- CORE PLAYBACK LOOP ---
-function playLoop() {
-  if(!state.isPlaying) return;
-
-  if(state.noteIndex >= state.currentNotes.length) {
-    if(state.isPro) { setTimeout(playNextInQueue, 500); }
-    else { state.noteIndex = 0; playLoop(); }
-    return;
-  }
-
-  document.querySelectorAll('.note-card').forEach(e => e.classList.remove('active'));
-  const currentEl = document.getElementById('n'+state.noteIndex);
-  if(currentEl) currentEl.classList.add('active');
-
-  const noteStr = state.currentNotes[state.noteIndex];
-  const parts = noteStr.split('_');
-  const noteName = parts[0];
-  const multiplier = parts.length > 1 ? parseFloat(parts[1]) : 1;
-
-  const bpm = state.isPro ? state.currentBpm : parseInt(document.getElementById('bpmInput').value);
-  const baseDuration = 60 / bpm; 
-  const totalDuration = baseDuration * multiplier;
-
-  playTone(noteName, totalDuration);
-
-  state.noteIndex++;
-  state.timer = setTimeout(playLoop, totalDuration * 1000);
-}
-
-// --- AUDIO ENGINE ---
-function playTone(note, duration) {
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  
-  const base = note.split('_')[0];
-  osc.frequency.value = FREQ_MAP[base] || 261.63;
-  
-  const inst = document.getElementById('instrumentSelect').value;
-  let isViolin = false;
-
-  switch(inst) {
-    case 'flute': osc.type = 'triangle'; break;
-    case 'keyboard': osc.type = 'square'; break;
-    case 'violin': 
-      osc.type = 'sawtooth'; 
-      isViolin = true; 
-      break;
-    default: osc.type = 'sine';
-  }
-
-  if (isViolin) {
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 2000; 
-    osc.connect(filter);
-    filter.connect(gain);
-    
-    // Vibrato
-    const vibOsc = audioCtx.createOscillator();
-    const vibGain = audioCtx.createGain();
-    vibOsc.frequency.value = 6; 
-    vibGain.gain.value = 4; 
-    vibOsc.connect(vibGain);
-    vibGain.connect(osc.frequency);
-    vibOsc.start(audioCtx.currentTime);
-    vibOsc.stop(audioCtx.currentTime + duration);
-  } else {
-    osc.connect(gain); 
-  }
-  
-  gain.connect(audioCtx.destination);
-  
-  const now = audioCtx.currentTime;
-  const gap = 0.05; 
-  const playTime = duration - gap; 
-  const stopTime = now + duration;
-
-  gain.gain.setValueAtTime(0, now);
-  
-  if (isViolin) {
-    gain.gain.linearRampToValueAtTime(0.4, now + 0.15); 
-    gain.gain.setValueAtTime(0.4, stopTime - 0.1);
-    gain.gain.linearRampToValueAtTime(0.001, stopTime);
-  } else {
-    gain.gain.linearRampToValueAtTime(0.4, now + 0.05);
-    gain.gain.setValueAtTime(0.4, now + playTime);
-    gain.gain.linearRampToValueAtTime(0.001, stopTime);
-  }
-  
-  osc.start(now);
-  osc.stop(stopTime);
-}
-
+animate();
 </script>
-
 
 </body>
 </html>
